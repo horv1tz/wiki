@@ -4,19 +4,19 @@ description: WinGet - современный пакетный менеджер W
 
 # Winget
 
-## Что такое WinGet
+# Что такое WinGet
 
 WinGet (Windows Package Manager) - это официальный пакетный менеджер от Microsoft для Windows 10 и Windows 11. Он предоставляет унифицированный интерфейс командной строки для установки, настройки и удаления приложений в Windows. Разработан как часть инициативы Microsoft по улучшению процесса управления приложениями.
 
-## Установка WinGet
+# Установка WinGet
 
-### Способ 1: Через Microsoft Store
+## Способ 1: Через Microsoft Store
 
 1. Откройте Microsoft Store
 2. Найдите "App Installer"
 3. Нажмите "Установить"
 
-### Способ 2: Через PowerShell
+## Способ 2: Через PowerShell
 
 ```powershell
 # Проверка наличия WinGet
@@ -26,9 +26,9 @@ winget --version
 Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
 ```
 
-## Подробное описание основных команд
+# Подробное описание основных команд
 
-### Поиск приложений
+## Поиск приложений
 
 ```powershell
 # Базовый поиск
@@ -44,7 +44,7 @@ winget search --exact <запрос>
 winget search <запрос> --accept-source-agreements --format json
 ```
 
-### Установка приложений
+## Установка приложений
 
 ```powershell
 # Базовая установка
@@ -63,7 +63,7 @@ winget install <id> --source winget
 winget install <id> --override "/INSTALLPATH=C:\CustomPath"
 ```
 
-### Управление обновлениями
+## Управление обновлениями
 
 ```powershell
 # Проверка доступных обновлений
@@ -82,7 +82,7 @@ winget upgrade --all --exclude <id1>,<id2>
 winget upgrade --all --include-unknown
 ```
 
-### Удаление приложений
+## Удаление приложений
 
 ```powershell
 # Базовое удаление
@@ -95,7 +95,7 @@ winget uninstall <id> --silent
 winget uninstall <id> --preserve-data
 ```
 
-## Управление источниками пакетов
+# Управление источниками пакетов
 
 ```powershell
 # Просмотр списка источников
@@ -114,7 +114,7 @@ winget source update
 winget source reset
 ```
 
-## Экспорт и импорт конфигураций
+# Экспорт и импорт конфигураций
 
 ```powershell
 # Экспорт списка установленных приложений
@@ -127,7 +127,7 @@ winget import -i .\apps.json
 winget import -i .\apps.json --ignore-unavailable
 ```
 
-## Winget.run - веб-интерфейс для WinGet
+# Winget.run - веб-интерфейс для WinGet
 
 #### Особенности платформы
 
@@ -164,9 +164,9 @@ winget import -i .\apps.json --ignore-unavailable
    * Выбор версии
    * Дополнительные параметры
 
-## Продвинутые техники использования WinGet
+# Продвинутые техники использования WinGet
 
-### Автоматизация установки
+## Автоматизация установки
 
 ```powershell
 # Создание скрипта установки
@@ -183,7 +183,7 @@ foreach ($app in $apps) {
 }
 ```
 
-### Мониторинг и логирование
+## Мониторинг и логирование
 
 ```powershell
 # Логирование установки
@@ -193,7 +193,7 @@ winget install <id> --log "C:\Logs\winget.log"
 winget install <id> --verbose-logs
 ```
 
-### Управление настройками
+## Управление настройками
 
 ```powershell
 # Просмотр настроек
@@ -213,7 +213,7 @@ winget settings
 }
 ```
 
-### Лучшие практики
+## Лучшие практики
 
 1. **Безопасность**
    * Проверяйте источники пакетов
@@ -228,9 +228,9 @@ winget settings
    * Очищайте кэш неиспользуемых пакетов
    * Ведите документацию установленного ПО
 
-## Решение проблем
+# Решение проблем
 
-### Общие проблемы и решения
+## Общие проблемы и решения
 
 1. **Ошибка доступа**
    * Запустите PowerShell от администратора
@@ -244,7 +244,7 @@ winget settings
    * Проверьте зависимости
    * Удалите конфликтующие версии
 
-### Диагностика
+## Диагностика
 
 ```powershell
 # Проверка целостности

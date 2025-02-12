@@ -4,7 +4,7 @@ description: Подробная инструкция по установке и 
 
 # Установка и настройка Gitlab Runner
 
-### 1. Установка GitLab Runner
+# 1. Установка GitLab Runner
 
 Для начала нам необходимо установить GitLab Runner на сервер. Выполните следующие команды последовательно:
 
@@ -28,9 +28,9 @@ gitlab-runner --version
 
 После установки GitLab Runner будет автоматически запущен как системный сервис.
 
-### 2. Регистрация Runner
+# 2. Регистрация Runner
 
-#### Подготовка к регистрации
+## Подготовка к регистрации
 
 Перед регистрацией runner'а необходимо получить регистрационные данные:
 
@@ -40,7 +40,7 @@ gitlab-runner --version
    * URL вашего GitLab instance
    * Registration token
 
-#### Процесс регистрации
+## Процесс регистрации
 
 Запустите процесс регистрации:
 
@@ -85,11 +85,11 @@ sudo gitlab-runner register
 # - docker-autoscaler (для автоматического масштабирования Docker)
 ```
 
-### 3. Настройка конфигурации
+# 3. Настройка конфигурации
 
 Конфигурационный файл находится в `/etc/gitlab-runner/config.toml`. Этот файл создается автоматически после регистрации runner'а.
 
-#### Подробный пример конфигурации
+## Подробный пример конфигурации
 
 ```toml
 # Максимальное количество одновременно выполняемых задач
@@ -162,9 +162,9 @@ log_format = "runner"
     port = "22"
 ```
 
-### 4. Настройка Executor'ов
+# 4. Настройка Executor'ов
 
-#### Docker Executor (подробно)
+## Docker Executor (подробно)
 
 ```toml
 [[runners]]
@@ -207,7 +207,7 @@ log_format = "runner"
     environment = ["DOCKER_TLS_CERTDIR="]
 ```
 
-#### Shell Executor (подробно)
+## Shell Executor (подробно)
 
 ```toml
 [[runners]]
@@ -231,9 +231,9 @@ log_format = "runner"
   ]
 ```
 
-### 5. Управление Runner'ом
+# 5. Управление Runner'ом
 
-#### Подробные команды управления
+## Подробные команды управления
 
 ```bash
 # Запуск сервиса
@@ -274,9 +274,9 @@ sudo gitlab-runner unregister --url "gitlab-url" --token "token"
 sudo gitlab-runner clean
 ```
 
-### 6. Обслуживание
+# 6. Обслуживание
 
-#### Обновление Runner'а
+## Обновление Runner'а
 
 ```bash
 # Обновление списка пакетов
@@ -289,7 +289,7 @@ sudo apt-get install gitlab-runner
 sudo systemctl restart gitlab-runner
 ```
 
-#### Очистка и обслуживание
+## Очистка и обслуживание
 
 ```bash
 # Очистка кэша
@@ -305,7 +305,7 @@ gitlab-runner verify
 sudo systemctl status gitlab-runner
 ```
 
-### 7. Рекомендации по безопасности
+# 7. Рекомендации по безопасности
 
 1. Регулярное обновление:
    * Настройте автоматическое обновление системы
