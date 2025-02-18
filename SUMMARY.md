@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Содержание 1](README.md)
+* [Содержание](README.md)
 
 ## DevOps
 
