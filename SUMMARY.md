@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Содержание](README.md)
+* [Содержание 1](README.md)
 
 ## DevOps
 
@@ -29,5 +29,3 @@
 ## Артефакты <a href="#artifacts" id="artifacts"></a>
 
 * [Nexus Sonatype](artifacts/nexus-sonatype.md)
-
-PIVO
