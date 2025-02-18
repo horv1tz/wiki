@@ -29,3 +29,5 @@
 ## Артефакты <a href="#artifacts" id="artifacts"></a>
 
 * [Nexus Sonatype](artifacts/nexus-sonatype.md)
+
+PIVO
