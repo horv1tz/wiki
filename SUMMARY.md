@@ -8,6 +8,10 @@
 * [Ansible](devops/ansible.md)
 * [Terraform](devops/terraform.md)
 
+## WEB
+
+* [Nginx](web/nginx.md)
+
 ## Linux
 
 * [Удобный терминал](linux/convenient-terminal.md)
