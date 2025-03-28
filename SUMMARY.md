@@ -15,6 +15,7 @@
 ## Linux
 
 * [Удобный терминал](linux/convenient-terminal.md)
+* [IPtables](linux/iptables.md)
 
 ## windows
 
