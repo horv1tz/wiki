@@ -139,7 +139,7 @@ log_format = "runner"
     shm_size = 0
     
     # Политика перезапуска контейнера
-    pull_policy = "if-not-present"
+    pull_policy = ["if-not-present"]
     
     # Настройки сети
     network_mode = "host"
@@ -148,11 +148,7 @@ log_format = "runner"
   [runners.cache]
     Type = "s3"
     Shared = true
-    
-  # Таймауты
-  [runners.custom]
-    build_timeout = 3600    # 1 час
-    
+
   # Настройки SSH
   [runners.ssh]
     user = "gitlab-runner"
@@ -160,6 +156,8 @@ log_format = "runner"
     host = "gitlab.example.com"
     port = "22"
 ```
+
+> **Примечание:** таймаут задачи не настраивается в `config.toml` — он задаётся ключом `timeout:` в `.gitlab-ci.yml` или в настройках проекта (Settings > CI/CD > Timeout). Блок `[runners.custom]` предназначен только для executor'а `custom` (параметры `config_exec`, `prepare_exec` и т.д.), а не для таймаутов.
 
 # 4. Настройка Executor'ов
 
@@ -189,7 +187,7 @@ log_format = "runner"
     shm_size = 0
     
     # Политика загрузки образов
-    pull_policy = "if-not-present"
+    pull_policy = ["if-not-present"]
     
     # Настройки сети
     network_mode = "host"
@@ -218,10 +216,7 @@ log_format = "runner"
   # Настройки сборки
   builds_dir = "/home/gitlab-runner/builds"
   cache_dir = "/home/gitlab-runner/cache"
-  
-  # Таймауты
-  build_timeout = 3600    # 1 час
-  
+
   # Переменные окружения
   environment = [
     "LC_ALL=en_US.UTF-8",
@@ -268,10 +263,9 @@ sudo gitlab-runner verify
 sudo gitlab-runner unregister --name "runner-name"
 # или по URL и token
 sudo gitlab-runner unregister --url "gitlab-url" --token "token"
-
-# Очистка старых сборок
-sudo gitlab-runner clean
 ```
+
+> Команды `gitlab-runner clean` / `gitlab-runner cache clean` не существуют. Для очистки удалите каталог сборок и кэша вручную (`/home/gitlab-runner/builds`, `/cache`) или настройте lifecycle-политику в объектном хранилище для S3-кэша.
 
 # 6. Обслуживание
 
@@ -291,11 +285,8 @@ sudo systemctl restart gitlab-runner
 ## Очистка и обслуживание
 
 ```bash
-# Очистка кэша
-gitlab-runner cache clean
-
-# Очистка старых сборок
-gitlab-runner clean
+# Ручная очистка каталога кэша (путь зависит от конфигурации volumes/cache_dir)
+sudo rm -rf /cache/*
 
 # Проверка статуса всех зарегистрированных runner'ов
 gitlab-runner verify

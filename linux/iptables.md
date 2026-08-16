@@ -360,7 +360,7 @@ iptables -X MYCHAIN  # Удалить цепочку
 
 ### Фильтрация по состоянию соединения
 
-* **Параметр:** `-m state --state <состояние>`
+* **Параметр:** `-m conntrack --ctstate <состояние>` (устаревший вариант: `-m state --state`)
 * **Описание:** Используется для фильтрации пакетов по состоянию соединения. Возможные состояния:
   * `NEW` — новое соединение
   * `ESTABLISHED` — уже установленные соединения
@@ -369,7 +369,7 @@ iptables -X MYCHAIN  # Удалить цепочку
 *   **Пример:**
 
     ```bash
-    iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+    iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
     ```
 
 ## 6. Цели (`-j target`)
@@ -477,7 +477,7 @@ iptables -P INPUT DROP   # Блокируем всё входящее
 iptables -P FORWARD DROP # Блокируем пересылаемый трафик
 iptables -P OUTPUT ACCEPT # Разрешаем исходящий трафик
 
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT  # Разрешаем существующие соединения
+iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT  # Разрешаем существующие соединения
 iptables -A INPUT -p tcp --dport 22 -j ACCEPT  # Разрешаем SSH
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT  # Разрешаем HTTP
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT # Разрешаем HTTPS
@@ -519,8 +519,8 @@ iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 3128
 Запрещаем больше 10 новых соединений с одного IP за 60 секунд.
 
 ```bash
-iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH
-iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 10 --name SSH -j DROP
+iptables -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --set --name SSH
+iptables -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 10 --name SSH -j DROP
 ```
 
 ***

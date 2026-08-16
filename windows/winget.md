@@ -247,12 +247,18 @@ winget settings
 ## Диагностика
 
 ```powershell
-# Проверка целостности
-winget doctor
+# Версия WinGet, пути и системная информация
+winget --info
 
-# Очистка кэша
-winget cache clear
+# Обновление источников пакетов
+winget source update
 
-# Сброс настроек
-winget reset
+# Полный сброс источников (при проблемах с индексом)
+winget source reset --force
+
+# Открыть папку с логами
+winget source list --logs
+
+# Подробный вывод для диагностики конкретной команды
+winget list --verbose-logs
 ```

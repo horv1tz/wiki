@@ -102,6 +102,8 @@ nexus-features=\
 nexus.secrets.file=/opt/nexus.secrets.json
 ```
 
+> **Примечание:** строки `nexus-edition` / `nexus-features` и файл секретов относятся к **Nexus Repository Pro** и требуют лицензии. Для бесплатной версии OSS этот блок и файл `/opt/nexus.secrets.json` не нужны — Nexus по умолчанию запустится в редакции OSS.
+
 ## 4. Запуск сервиса
 
 ### 4.1 Запустите Nexus:
