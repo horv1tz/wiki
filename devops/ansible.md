@@ -15,11 +15,23 @@ sudo apt update
 sudo apt install ansible
 ```
 
-## На CentOS/RHEL
+## На RHEL/Fedora/CentOS Stream
 
 ```bash
-sudo yum install epel-release
-sudo yum install ansible
+sudo dnf install epel-release   # для RHEL-подобных систем
+sudo dnf install ansible
+```
+
+## Через pipx (свежая версия на любой ОС)
+
+```bash
+pipx install ansible
+```
+
+Пакет `ansible` — это сборник, включающий `ansible-core` и набор коллекций. Если нужна минимальная установка, используйте `ansible-core`, а коллекции добавляйте по мере необходимости:
+
+```bash
+ansible-galaxy collection install community.general
 ```
 
 ## Проверка версии
@@ -81,7 +93,7 @@ Playbooks — это сценарии, написанные на YAML, опис�
 
 ```yaml
 - hosts: target_hosts
-  become: yes  # Повышение привилегий до root
+  become: true  # Повышение привилегий до root
   tasks:
     - name: Описание задачи
       module_name:
@@ -93,7 +105,7 @@ Playbooks — это сценарии, написанные на YAML, опис�
 
 ```yaml
 - hosts: webservers
-  become: yes
+  become: true
   tasks:
     - name: Установить Nginx
       apt:

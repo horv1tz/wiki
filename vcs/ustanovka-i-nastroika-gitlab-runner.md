@@ -30,59 +30,58 @@ gitlab-runner --version
 
 # 2. Регистрация Runner
 
-## Подготовка к регистрации
+## Актуальный способ: runner authentication token (GitLab 16+)
 
-Перед регистрацией runner'а необходимо получить регистрационные данные:
+Начиная с GitLab 16.0 регистрация через legacy registration token объявлена устаревшей (удалена в GitLab 18.0). Вместо него используются **runner authentication tokens** (префикс `glrt-`), которые создаются в веб-интерфейсе:
 
 1. Войдите в веб-интерфейс GitLab
-2. Перейдите в Settings > CI/CD > Runners
-3. В разделе "Set up a specific Runner manually" вы найдете:
-   * URL вашего GitLab instance
-   * Registration token
+2. Перейдите в **Admin > CI/CD > Runners** (для instance runner) или **Settings > CI/CD > Runners** внутри группы/проекта
+3. Нажмите **New instance runner** / **New project runner**
+4. Укажите теги, описание и другие параметры, нажмите **Create runner**
+5. Скопируйте выданный токен вида `glrt-...`
 
-## Процесс регистрации
+Затем зарегистрируйте runner на сервере:
 
-Запустите процесс регистрации:
+```bash
+sudo gitlab-runner register \
+  --url "https://gitlab.example.com/" \
+  --token "glrt-xxxxxxxxxxxx" \
+  --executor "docker" \
+  --docker-image "alpine:latest" \
+  --description "production-server-01"
+```
+
+Интерактивный вариант (`sudo gitlab-runner register`) также работает, но в качестве токена запросит именно authentication token.
+
+## Legacy-способ (GitLab 15.x и старше)
+
+Если ваш GitLab старше 16-й версии, регистрационный token находится в **Settings > CI/CD > Runners**, раздел "Set up a specific Runner manually". Запустите:
 
 ```bash
 sudo gitlab-runner register
 ```
 
-Вам будет предложено ввести следующую информацию:
+Мастер попросит ввести:
 
 ```bash
 # 1. GitLab instance URL
-# Введите URL вашего GitLab сервера
 # Например: https://gitlab.com/ или https://gitlab.your-domain.com/
 
 # 2. Registration token
-# Скопируйте token из веб-интерфейса GitLab
 
 # 3. Описание runner'а
-# Введите понятное описание, например:
-# "production-server-01" или "docker-runner-staging"
+# Например: "production-server-01" или "docker-runner-staging"
 
 # 4. Теги (опционально)
-# Теги помогают организовать и фильтровать runner'ы
 # Например: docker,aws,production
-# Можно оставить пустым и нажать Enter
 
-# 5. Maintenance note (опционально)
-# Дополнительная заметка для обслуживания
-# Можно оставить пустым и нажать Enter
-
-# 6. Выбор executor'а
-# Выберите один из следующих:
+# 5. Выбор executor'а
 # - shell (выполняет команды напрямую в системе)
 # - docker (запускает задачи в Docker контейнерах)
 # - docker-windows (для Windows контейнеров)
-# - docker+machine (для автоматического масштабирования)
+# - docker+machine (автомасштабирование, устарел — см. docker-autoscaler)
 # - kubernetes (для запуска в Kubernetes)
-# - custom (пользовательская конфигурация)
-# - ssh (для удаленного выполнения)
-# - parallels (для Parallels виртуализации)
-# - virtualbox (для VirtualBox)
-# - docker-autoscaler (для автоматического масштабирования Docker)
+# - custom, ssh, parallels, virtualbox, docker-autoscaler
 ```
 
 # 3. Настройка конфигурации

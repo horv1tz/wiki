@@ -28,12 +28,12 @@ Nginx можно установить из стандартных репозит
     ```
 
     _Объяснение:_ Команда `apt update` обновляет списки пакетов, а `apt install nginx` устанавливает Nginx.
-*   **CentOS/RHEL**\
+*   **CentOS Stream/RHEL/Fedora**\
     Вначале добавьте репозиторий EPEL, затем установите Nginx:
 
     ```sh
-    sudo yum install epel-release -y
-    sudo yum install nginx -y
+    sudo dnf install epel-release -y
+    sudo dnf install nginx -y
     ```
 
     _Объяснение:_ EPEL (Extra Packages for Enterprise Linux) содержит дополнительные пакеты, среди которых и Nginx.
@@ -302,14 +302,16 @@ _Объяснение:_ Ограничение до 5 запросов в сек
     ```nginx
     server {
         listen 443 ssl;
+        http2 on;
         server_name example.com;
         ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
         ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+        ssl_protocols TLSv1.2 TLSv1.3;
         include ssl_params.conf;
     }
     ```
 
-    _Объяснение:_ Директива `ssl_certificate` указывает на путь к сертификату, а `ssl_certificate_key` — на приватный ключ. Рекомендуется включать дополнительные параметры безопасности через файл `ssl_params.conf`.
+    _Объяснение:_ Директива `ssl_certificate` указывает на путь к сертификату, а `ssl_certificate_key` — на приватный ключ. Начиная с Nginx 1.25.1 HTTP/2 включается отдельной директивой `http2 on;` (вариант `listen 443 ssl http2;` объявлен устаревшим). TLS 1.0/1.1 считаются небезопасными и отключены. Дополнительные параметры безопасности рекомендуется выносить в файл `ssl_params.conf`.
 
 ***
 
@@ -411,13 +413,13 @@ Nginx может служить связующим звеном между ве�
 
 ```nginx
 location ~ \.php$ {
-    fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+    fastcgi_pass unix:/run/php/php8.2-fpm.sock;
     fastcgi_index index.php;
     include fastcgi_params;
 }
 ```
 
-_Объяснение:_ Директива `fastcgi_pass` указывает на сокет, через который Nginx передаёт запросы на обработку PHP. Файл `fastcgi_params` содержит стандартные переменные окружения.
+_Объяснение:_ Директива `fastcgi_pass` указывает на сокет, через который Nginx передаёт запросы на обработку PHP (имя сокета зависит от установленной версии — проверьте `ls /run/php/`). Файл `fastcgi_params` содержит стандартные переменные окружения.
 
 ### **11.2. Работа с Python через uWSGI**
 
@@ -501,9 +503,9 @@ grep 'error' /var/log/nginx/error.log
 ## **14. Полезные ссылки и ресурсы**
 
 * **Официальная документация:** [nginx.org](https://nginx.org/)\
-  &#xNAN;_&#x41E;бъяснение:_ Это основной источник информации и справки по директивам и модулям.
+  _Объяснение:_ Это основной источник информации и справки по директивам и модулям.
 * **Генератор конфигураций:** [nginxconfig.io](https://nginxconfig.io/)\
-  &#xNAN;_&#x41E;бъяснение:_ Удобный онлайн-инструмент для создания стартовой конфигурации.
+  _Объяснение:_ Удобный онлайн-инструмент для создания стартовой конфигурации.
 * **Инструменты мониторинга и анализа логов:**
   * [ngxtop](https://github.com/lebinh/ngxtop) — анализатор логов в реальном времени.
   * [GoAccess](https://goaccess.io/) — интерактивный анализатор логов.

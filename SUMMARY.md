@@ -17,15 +17,15 @@
 * [Удобный терминал](linux/convenient-terminal.md)
 * [IPtables](linux/iptables.md)
 
-## windows
+## Windows
 
-* [Winget](windows/winget.md)
+* [WinGet](windows/winget.md)
 
 ## VCS
 
 * [Шпаргалка Git](vcs/git.md)
-* [Установка и настройка Gitlab EE](vcs/ustanovka-i-nastroika-gitlab-ee.md)
-* [Установка и настройка Gitlab Runner](vcs/ustanovka-i-nastroika-gitlab-runner.md)
+* [Установка и настройка GitLab EE](vcs/ustanovka-i-nastroika-gitlab-ee.md)
+* [Установка и настройка GitLab Runner](vcs/ustanovka-i-nastroika-gitlab-runner.md)
 
 ## Мониторинг
 

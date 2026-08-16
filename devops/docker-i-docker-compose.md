@@ -15,12 +15,31 @@ Docker — это платформа для разработки, доставк
 
 # Установка Docker
 
-## На Linux
+## На Linux (Debian/Ubuntu, рекомендуемый способ)
+
+Официальный репозиторий Docker — предпочтительный способ установки, гарантирующий актуальные обновления:
+
+```bash
+# Добавление официального GPG-ключа и репозитория Docker
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Установка Docker Engine и плагина Compose v2
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+sudo systemctl enable --now docker
+sudo usermod -aG docker $(whoami)
+```
+
+Альтернативный быстрый способ — convenience-скрипт (не рекомендуется для продакшена):
 
 ```bash
 curl -fsSL https://get.docker.com | sudo sh
-sudo systemctl enable --now docker
-sudo usermod -aG docker $(whoami)
 ```
 
 ## На MacOS
@@ -31,6 +50,7 @@ sudo usermod -aG docker $(whoami)
 
 ```bash
 docker --version
+docker compose version
 ```
 
 # Основные Команды Docker
@@ -253,7 +273,7 @@ CMD ["команда", "аргумент"]
 
 ```Dockerfile
 # Базовый образ
-FROM python:3.9-slim
+FROM python:3.13-slim
 
 # Установка рабочей директории
 WORKDIR /app
@@ -262,7 +282,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Установка зависимостей
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Копирование исходного кода
 COPY . .
@@ -296,10 +316,13 @@ docker run -d -p 5000:5000 myapp:latest
 
 Docker Compose используется для определения и запуска многоконтейнерных приложений.
 
-## Файл docker-compose.yml
+> **Важно:** автономный бинарник `docker-compose` (Compose v1) объявлен устаревшим и больше не поддерживается. Используйте Compose v2 — плагин `docker compose` (команда пишется через пробел), который устанавливается вместе с Docker Engine (пакет `docker-compose-plugin`).
+
+## Файл compose.yaml
+
+Поле `version` начиная со спецификации Compose v2 устарело и игнорируется — его можно не указывать. Директива `links` тоже устарела: сервисы в одной сети Compose доступны друг другу по имени автоматически.
 
 ```yaml
-version: '3'
 services:
   web:
     build: .
@@ -307,7 +330,7 @@ services:
       - "5000:5000"
     volumes:
       - .:/app
-    links:
+    depends_on:
       - redis
   redis:
     image: "redis:alpine"
@@ -318,39 +341,39 @@ services:
 *   **Запуск всех сервисов:**
 
     ```bash
-    docker-compose up
+    docker compose up
     ```
 
     **В фоновом режиме:**
 
     ```bash
-    docker-compose up -d
+    docker compose up -d
     ```
 *   **Остановка всех сервисов:**
 
     ```bash
-    docker-compose down
+    docker compose down
     ```
 *   **Пересборка образов:**
 
     ```bash
-    docker-compose build
+    docker compose build
     ```
 *   **Просмотр логов:**
 
     ```bash
-    docker-compose logs
+    docker compose logs
     ```
 *   **Выполнение команды внутри сервиса:**
 
     ```bash
-    docker-compose exec <сервис> <команда>
+    docker compose exec <сервис> <команда>
     ```
 
     **Пример:**
 
     ```bash
-    docker-compose exec web /bin/bash
+    docker compose exec web /bin/bash
     ```
 
 # Docker Registry
@@ -563,7 +586,7 @@ docker service ls
 
 ```Dockerfile
 # Ступень 1: Сборка приложения
-FROM golang:1.17 AS builder
+FROM golang:1.24 AS builder
 WORKDIR /app
 COPY . .
 RUN go build -o myapp

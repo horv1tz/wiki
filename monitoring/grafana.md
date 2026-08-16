@@ -6,37 +6,32 @@ description: Инструкция по развёртыванию Grafana
 
 ## Прямая установка на Linux
 
-### Импорт GPG-ключа
+### Шаг 1: Импорт GPG-ключа
 
-Для добавления GPG-ключа Grafana выполните следующую команду:
-
-```bash
-wget -qO - https://mirror.half-it.ru/stuff/grafana-gpg-full.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/grafana.gpg > /dev/null
-```
-
-### 2. Добавление репозитория Grafana в систему
-
-Откройте файл для добавления источника репозитория Grafana:
+Создайте директорию для ключей и импортируйте GPG-ключ репозитория Grafana:
 
 ```bash
-sudo nano /etc/apt/sources.list.d/grafana.list
+sudo install -m 0755 -d /etc/apt/keyrings
+wget -qO - https://mirror.half-it.ru/stuff/grafana-gpg-full.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
 ```
 
-Добавьте в файл следующую строку:
+### Шаг 2: Добавление репозитория Grafana в систему
+
+Создайте файл источника репозитория:
 
 ```bash
-deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://mirror.half-it.ru/apt-public/apt.grafana.com stable main
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://mirror.half-it.ru/apt-public/apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
 ```
 
-### Примечания
+> **Важно:** путь в `signed-by` должен совпадать с путём, куда сохранён ключ (`/etc/apt/keyrings/grafana.gpg`).
 
-После добавления репозитория рекомендуется обновить список пакетов с помощью:
+### Шаг 3: Обновление списка пакетов
 
 ```bash
 sudo apt update
 ```
 
-Теперь ваша система настроена для установки и обновления Grafana из указанного репозитория.
+Теперь система настроена для установки и обновления Grafana из указанного репозитория.
 
 ## Установка Grafana на Linux
 

@@ -21,7 +21,7 @@ wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz
 sudo tar -xvf latest-unix.tar.gz
 ```
 
-### 1.3 Переименуйте дирикторию
+### 1.3 Переименуйте директорию
 
 ```bash
 cd /opt
@@ -30,7 +30,7 @@ sudo mv nexus-3.x.x nexus
 
 ## 2. Настройка пользователя и прав
 
-### 1.1 Создайте пользователя nexus (для Linux):
+### 2.1 Создайте пользователя nexus (для Linux):
 
 ```bash
 sudo useradd nexus
@@ -45,7 +45,7 @@ sudo chown -R nexus:nexus sonatype-work
 
 ## 3. Конфигурация
 
-### 3.1 Настройте системного сервиса
+### 3.1 Настройте системный сервис
 
 **Создайте файл `/etc/systemd/system/nexus.service`:**
 
@@ -170,7 +170,7 @@ server {
 
     ssl_certificate /path/to/cert;
     ssl_certificate_key /path/to/key;
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
 
     client_max_body_size 10000M;
@@ -195,10 +195,10 @@ server {
 }
 ```
 
-### 6.3 Создание символичиской ссылки для "активации"
+### 6.3 Создание символической ссылки для активации конфигурации
 
 ```bash
-ln -s /etc/nginx/sites-availble/nexus.conf /etc/nginx/sites-enable
+sudo ln -s /etc/nginx/sites-available/nexus.conf /etc/nginx/sites-enabled/
 ```
 
 ### 6.4 Проверка конфига и перезапуск nginx
@@ -209,7 +209,7 @@ ln -s /etc/nginx/sites-availble/nexus.conf /etc/nginx/sites-enable
 sudo nginx -t
 ```
 
-**Для презагрузки конфигурации**
+**Для перезагрузки конфигурации**
 
 ```bash
 sudo nginx -s reload

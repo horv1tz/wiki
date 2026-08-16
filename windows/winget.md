@@ -102,7 +102,7 @@ winget uninstall <id> --preserve-data
 winget source list
 
 # Добавление нового источника
-winget source add <имя> <url>
+winget source add --name <имя> --arg <url>
 
 # Удаление источника
 winget source remove <имя>

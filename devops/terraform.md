@@ -4,7 +4,9 @@ description: Шпаргалка по Terraform
 
 # Terraform
 
-Terraform — это инструмент с открытым исходным кодом от компании HashiCorp, предназначенный для описания, создания и управления инфраструктурой в виде кода (Infrastructure as Code, IaC). Он позволяет определять инфраструктуру в файлах конфигурации и применять эти конфигурации для создания и изменения ресурсов в различных облачных и локальных средах.
+Terraform — это инструмент от компании HashiCorp, предназначенный для описания, создания и управления инфраструктурой в виде кода (Infrastructure as Code, IaC). Он позволяет определять инфраструктуру в файлах конфигурации и применять эти конфигурации для создания и изменения ресурсов в различных облачных и локальных средах.
+
+> **Примечание:** начиная с версии 1.7 Terraform распространяется под лицензией BUSL 1.1 (не open source). Как открытая альтернатива существует форк [OpenTofu](https://opentofu.org/) с совместимым синтаксисом — команды и конфигурации из этой шпаргалки применимы и к нему.
 
 # Установка Terraform
 
@@ -222,8 +224,8 @@ module "my_instance" {
 
 ```hcl
 module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
-  version = "2.77.0"
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 5.0"
 
   name = "my-vpc"
   cidr = "10.0.0.0/16"
@@ -237,22 +239,40 @@ module "vpc" {
 
 ## Пример конфигурации провайдера AWS
 
+Предпочтительный способ аутентификации — стандартная цепочка провайдера AWS (переменные окружения, `~/.aws/credentials`, IAM-роль), без явного указания ключей в коде:
+
 ```hcl
 provider "aws" {
-  region                  = var.region
-  access_key              = var.aws_access_key
-  secret_key              = var.aws_secret_key
-  shared_credentials_file = "~/.aws/credentials"
-  profile                 = "default"
+  region = var.region
+}
+```
+
+При необходимости файл учётных данных можно указать явно (обратите внимание: аргумент называется `shared_credentials_files` и принимает список):
+
+```hcl
+provider "aws" {
+  region                   = var.region
+  shared_credentials_files = ["~/.aws/credentials"]
+  profile                  = "default"
 }
 ```
 
 ## Версионирование провайдеров
 
+Начиная с Terraform 0.13 версии провайдеров указываются в блоке `required_providers` (аргумент `version` внутри блока `provider` объявлен устаревшим):
+
 ```hcl
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
 provider "aws" {
-  version = "~> 3.0"
-  region  = var.region
+  region = var.region
 }
 ```
 
@@ -325,9 +345,10 @@ terraform workspace select dev
 ```hcl
 resource "aws_s3_bucket" "example" {
   bucket = "my-bucket-${terraform.workspace}"
-  acl    = "private"
 }
 ```
+
+> **Примечание:** аргумент `acl` в ресурсе `aws_s3_bucket` устарел начиная с провайдера AWS v4. Для управления ACL используйте отдельный ресурс `aws_s3_bucket_acl` (по умолчанию новые бакеты и так приватные).
 
 # Лучшие практики
 
