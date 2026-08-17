@@ -1,0 +1,42 @@
+{
+  "excludeFiles": ["node_modules", ".git"],
+  "lang": "ru",
+  "fileExtensions": [".md"],
+  "ignoreUrls": true,
+  "ignoreDigits": true,
+  "ignoreLatin": true,
+  "dictionary": [
+    "Docker",
+    "Dockerfile",
+    "kubernetes",
+    "Ansible",
+    "Terraform",
+    "GitLab",
+    "Grafana",
+    "Prometheus",
+    "Alertmanager",
+    "Loki",
+    "Promtail",
+    "Nexus",
+    "Sonatype",
+    "Nginx",
+    "WinGet",
+    "systemd",
+    "nftables",
+    "iptables",
+    "fail2ban",
+    "Certbot",
+    "PostgreSQL",
+    "Vault",
+    "SOPS",
+    "backend",
+    "upstream",
+    "playbook",
+    "executor",
+    "pipeline"
+  ],
+  "ignoreText": [
+    "```[\\s\\S]*?```",
+    "`[^`]+`"
+  ]
+}

@@ -108,3 +108,50 @@ sudo systemctl stop grafana-server
 ```bash
 grafana-server -v
 ```
+
+## Provisioning — источники данных и дашборды как код
+
+Вместо ручной настройки через веб-интерфейс источники данных и дашборды можно описывать файлами — они подхватятся при запуске Grafana и удобно версионируются в Git.
+
+### Источник данных `/etc/grafana/provisioning/datasources/prometheus.yml`
+
+```yaml
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://localhost:9090
+    isDefault: true
+
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://localhost:3100
+```
+
+### Дашборды `/etc/grafana/provisioning/dashboards/dashboards.yml`
+
+```yaml
+apiVersion: 1
+
+providers:
+  - name: default
+    folder: ""
+    type: file
+    options:
+      path: /etc/grafana/dashboards
+```
+
+JSON-файлы дашбордов кладутся в `/etc/grafana/dashboards/`. Экспортировать существующий дашборд: **Dashboard settings > JSON Model**.
+
+```bash
+sudo systemctl restart grafana-server
+```
+
+## Полезные ссылки
+
+* [Официальная документация Grafana](https://grafana.com/docs/grafana/latest/)
+* [Provisioning Grafana](https://grafana.com/docs/grafana/latest/administration/provisioning/)
+* [Grafana Dashboards](https://grafana.com/grafana/dashboards/) — каталог готовых дашбордов

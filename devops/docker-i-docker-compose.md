@@ -598,6 +598,59 @@ COPY --from=builder /app/myapp .
 CMD ["./myapp"]
 ```
 
+# Healthcheck — проверка состояния контейнера
+
+Docker может сам определять, «живо» ли приложение внутри контейнера, и перезапускать его по политике `--restart`.
+
+В Dockerfile:
+
+```Dockerfile
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+  CMD curl -f http://localhost/health || exit 1
+```
+
+Или в compose.yaml:
+
+```yaml
+services:
+  web:
+    image: myapp
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+```
+
+Статус виден в `docker ps` (колонка STATUS: `healthy`/`unhealthy`) и `docker inspect`.
+
+# Multi-arch сборка (buildx)
+
+Buildx — современный сборщик образов (входит в пакет `docker-buildx-plugin`):
+
+```bash
+# Сборка под amd64 и arm64 с отправкой в реестр
+docker buildx build --platform linux/amd64,linux/arm64 -t username/myapp:latest --push .
+
+# Кэширование слоёв в реестре для ускорения CI-сборок
+docker buildx build \
+  --cache-from type=registry,ref=username/myapp:buildcache \
+  --cache-to type=registry,ref=username/myapp:buildcache,mode=max \
+  -t username/myapp:latest --push .
+```
+
+# Сканирование образов на уязвимости
+
+```bash
+# Встроенный сканер Docker
+docker scout cves myapp:latest
+
+# Trivy — популярный открытый сканер
+trivy image myapp:latest
+```
+
+Сканирование образов стоит включать в CI/CD-пайплайн и блокировать релизы с критическими уязвимостями.
+
 # Получение Справки
 
 *   **Общая справка:**

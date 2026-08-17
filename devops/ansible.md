@@ -361,6 +361,87 @@ Ansible поддерживает различные фильтры для пре
     msg: "{{ 'HELLO WORLD' | lower }}"
 ```
 
+# Пример роли «nginx»
+
+`roles/nginx/tasks/main.yml`:
+
+```yaml
+- name: Установить Nginx
+  package:
+    name: nginx
+    state: present
+
+- name: Развернуть конфигурацию
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    mode: "0644"
+  notify: Перезапустить Nginx
+
+- name: Убедиться, что сервис запущен
+  service:
+    name: nginx
+    state: started
+    enabled: true
+```
+
+`roles/nginx/handlers/main.yml`:
+
+```yaml
+- name: Перезапустить Nginx
+  service:
+    name: nginx
+    state: restarted
+```
+
+`roles/nginx/defaults/main.yml` — значения по умолчанию, легко переопределяются:
+
+```yaml
+http_port: 80
+```
+
+Использование в playbook:
+
+```yaml
+- hosts: webservers
+  become: true
+  roles:
+    - role: nginx
+      vars:
+        http_port: 8080
+```
+
+# Тестирование ролей с Molecule
+
+[Molecule](https://ansible.readthedocs.io/projects/molecule/) прогоняет роль в изолированном контейнере/ВМ и проверяет идемпотентность:
+
+```bash
+pipx install molecule[docker] molecule-plugins
+
+# Создать сценарий тестирования внутри роли
+cd roles/nginx
+molecule init scenario
+
+# Полный цикл: create → converge → idempotence → verify → destroy
+molecule test
+```
+
+Типичный `molecule/default/molecule.yml`:
+
+```yaml
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: instance
+    image: geerlingguy/docker-ubuntu2404-ansible:latest
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
+```
+
 # Практики лучшего использования
 
 * **Организуйте код**: Используйте роли и коллекции для структурирования.

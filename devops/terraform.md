@@ -381,6 +381,112 @@ resource "aws_s3_bucket" "example" {
 * **Terragrunt**: Надстройка над Terraform для управления конфигурациями, разделения окружений и модулей.
 * **Интеграция с CI/CD**: Используйте Terraform в конвейерах Jenkins, GitLab CI/CD, GitHub Actions и др.
 
+# Полный пример мини-проекта
+
+Структура:
+
+```plaintext
+project/
+├── main.tf
+├── variables.tf
+├── outputs.tf
+└── terraform.tfvars
+```
+
+`main.tf`:
+
+```hcl
+terraform {
+  required_version = ">= 1.5"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = var.region
+}
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  owners      = ["099720109477"] # Canonical
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+}
+
+resource "aws_instance" "web" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = var.instance_type
+
+  tags = {
+    Name        = "web-${var.environment}"
+    Environment = var.environment
+  }
+}
+```
+
+`variables.tf`:
+
+```hcl
+variable "region" {
+  type    = string
+  default = "eu-central-1"
+}
+
+variable "instance_type" {
+  type    = string
+  default = "t3.micro"
+}
+
+variable "environment" {
+  type    = string
+  default = "dev"
+}
+```
+
+`outputs.tf`:
+
+```hcl
+output "public_ip" {
+  value = aws_instance.web.public_ip
+}
+```
+
+# Современные возможности языка
+
+## Блок moved — безопасный рефакторинг
+
+При переименовании ресурса или переносе в модуль Terraform не пересоздаст ресурс, если описать перемещение:
+
+```hcl
+moved {
+  from = aws_instance.example
+  to   = aws_instance.web
+}
+```
+
+## Блок check — проверки инфраструктуры (Terraform 1.5+)
+
+```hcl
+check "health_check" {
+  data "http" "web" {
+    url = "http://${aws_instance.web.public_ip}"
+  }
+
+  assert {
+    condition     = data.http.web.status_code == 200
+    error_message = "Сервис ${aws_instance.web.public_ip} не отвечает"
+  }
+}
+```
+
 # Полезные команды
 
 *   **Получение выходных данных**

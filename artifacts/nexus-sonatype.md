@@ -222,3 +222,46 @@ sudo nginx -s reload
 ```bash
 sudo systemctl reload nginx.service
 ```
+
+## 7. Настройка Docker-репозитория
+
+Nexus может выступать приватным Docker Registry (hosted) и кэширующим прокси для Docker Hub (proxy).
+
+### 7.1 Создание репозиториев в веб-интерфейсе
+
+1. **Settings (шестерёнка) > Repository > Repositories > Create repository**
+2. **docker (proxy)** — прокси к `https://registry-1.docker.io`, порт коннектора, например 8082
+3. **docker (hosted)** — локальный реестр для своих образов, порт коннектора, например 8083
+4. **docker (group)** — объединяет proxy и hosted в одну точку входа, порт 8084
+
+> Docker-клиент обращается к репозиториям Nexus через **коннекторы** (отдельные HTTP-порты), а не через основной порт 8081. Откройте эти порты в брандмауэре или настройте виртуальные хосты Nginx для каждого порта.
+
+### 7.2 Realm и аутентификация
+
+Включите **Security > Realms > Docker Bearer Token Realm** (перенести в Active) — иначе `docker login` работать не будет.
+
+### 7.3 Использование
+
+```bash
+docker login <домен>:8084
+docker tag myapp:latest <домен>:8084/myapp:1.0
+docker push <домен>:8084/myapp:1.0
+
+# Через proxy-репозиторий образы Docker Hub тянутся через Nexus
+docker pull <домен>:8084/library/nginx
+```
+
+## 8. Cleanup Policies — очистка старых артефактов
+
+Чтобы диск не переполнялся, настройте политики очистки:
+
+1. **Settings > Repository > Cleanup Policies > Create Cleanup policy**
+2. Формат, например `docker`; критерии: «создан более N дней назад», «не скачивался N дней», «без тега latest»
+3. Примените политику в настройках репозитория (**Hosted/Proxy repository > Cleanup Policy**)
+
+Очистка выполняется задачей **Admin > Cleanup unused asset blobs** (запланирована по умолчанию) — она физически удаляет помеченные blob'ы.
+
+## 9. Полезные ссылки
+
+* [Документация Sonatype Nexus](https://help.sonatype.com/en/sonatype-nexus-repository.html)
+* [Docker Registry в Nexus](https://help.sonatype.com/en/docker-registry.html)
